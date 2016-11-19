@@ -43,11 +43,11 @@ class GameTracker(object):
 
     def give_points(self, phone_num):
         # self.players[phone_num].score += (3 - self.pics_received)
-        points_received = str(3 - self.pics_received)
+        points_received = 3 - self.pics_received
         self.players[phone_num][1] += points_received
         self.pics_received += 1
         msg = ("Congrats this picture is a match! You have earned "
-               + points_received + " points. You now have "
+               + str(points_received) + " points. You now have "
                # + str(players[phone_num].score) + " points.")
                + str(players[phone_num][1]) + " points.")
         self.send_message(phone_num, msg)
