@@ -1,9 +1,10 @@
 # import twilio.twiml
 from game_tracker import GameTracker
-
+import twilio.twiml
 from flask import Flask, request, redirect, session
 
 app = Flask(__name__)
+app.config.from_object(__name__)
 
 GAME_TRACKER = GameTracker()
 SECRET_KEY = 'not so secret'
