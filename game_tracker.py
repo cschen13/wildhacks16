@@ -4,10 +4,10 @@ from player import Player
 from twilio.rest import TwilioRestClient 
 
 class GameTracker(object):
-    def __init__(self):
-        self.topic = None
-        self.pics_received = 0
-        self.players = {}
+    def __init__(self,topic=None,pics_received=0,players={}):
+        self.topic = topic
+        self.pics_received = pics_received
+        self.players = players
         self.twilio_client = TwilioClient()
         self.prizes_per_round = 3
 

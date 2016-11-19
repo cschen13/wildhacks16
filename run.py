@@ -10,7 +10,10 @@ app.secret_key = "super secret key"
 
 @app.route("/", methods=['GET', 'POST'])
 def respond_to_message():
-    GAME_TRACKER = session.get('gt',GameTracker())
+    topic= session.get('topic', None)
+    pics_received = session.get('pics_received', 0)
+    players = session.get('players', {})
+    GAME_TRACKER = GameTracker(topic, pics_received, players)
     from_number = request.values.get('From', None)
     from_message = request.values.get('Body', '')
     picture_url = request.values.get('MediaUrl0', None)
@@ -38,7 +41,9 @@ def respond_to_message():
     else:
         resp = "You're supposed to send a picture, idiot"
     # resp.message(message)
-    session['gt'] = GAME_TRACKER
+    session['topic'] = GAME_TRACKER.topic
+    session['pics_received'] = GAME_TRACKER.pics_received
+    session['players'] = GAME_TRACKER.players
     return resp
 
 # if __name__ == "__main__":
