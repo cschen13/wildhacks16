@@ -1,8 +1,9 @@
 from twilio.rest import TwilioRestClient
 
-import config
+ACCOUNT = os.environ['ACCOUNT']
+TOKEN = os.environ['TOKEN']
 
-client = TwilioRestClient(config.ACCOUNT, config.TOKEN)
+client = TwilioRestClient(ACCOUNT, TOKEN)
 
 message = client.sms.messages.create(to="+12246221941",
                                      from_="+16693421879",
