@@ -1,11 +1,11 @@
 from game_tracker import GameTracker
-import twilio.twiml
+# import twilio.twiml
 from flask import Flask, request, redirect, session
 
 app = Flask(__name__)
 app.secret_key = "super secret key"
 
-#G AME_TRACKER = GameTracker()
+# GAME_TRACKER = GameTracker()
 
 def parse_message(msg):
     return (msg.get('From', None), msg.get('Body', ''), msg.get('MediaUrl0', None))
@@ -14,7 +14,7 @@ def parse_message(msg):
 def respond_to_message():
     topic= session.get('topic', None)
     pics_received = session.get('pics_received', 0)
-    players = session.get('players', {})
+    players = session.get('players', None)
     GAME_TRACKER = GameTracker(topic, pics_received, players)
     from_number, body, pic_url = parse_message(request.values)
     # numMedia = request.values.get('NumMedia', 0)

@@ -4,18 +4,18 @@ from player import Player
 from twilio.rest import TwilioRestClient 
 
 class GameTracker(object):
-    def __init__(self,topic=None,pics_received=0,players={}):
+    def __init__(self, topic=None, pics_received=0, players=None):
         if not topic:
             topic = "chair"
         self.topic = topic
         self.pics_received = pics_received
-        self.players = players
+        self.players = players if players else {}
         self.twilio_client = TwilioClient()
         self.prizes_per_round = 3
 
     def add_player(self, phone_num):
         # self.players[phone_num] = Player()
-        self.players[phone_num] = [None,0]
+        self.players[phone_num] = [None, 0]
         msg = ("You have entered the game. Message me back with your "
                "player name. Message me \"done\" at anytime to leave.")
         self.send_message(phone_num, msg)
@@ -49,7 +49,7 @@ class GameTracker(object):
         msg = ("Congrats this picture is a match! You have earned "
                + str(points_received) + " points. You now have "
                # + str(players[phone_num].score) + " points.")
-               + str(players[phone_num][1]) + " points.")
+               + str(self.players[phone_num][1]) + " points.")
         self.send_message(phone_num, msg)
         if self.pics_received == self.prizes_per_round:
             self.pics_received = 0
