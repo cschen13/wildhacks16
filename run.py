@@ -41,7 +41,7 @@ class GameTracker(db.Model):
         return msg
 
     def set_player_name(self, phone_num, name):
-        player = Players.query.get(phone_num)
+        player = Player.query.get(phone_num)
         player.name = name
         db.session.commmit()
         msg = "Thanks " + name + "! You're looking for a " + self.topic
@@ -56,7 +56,7 @@ class GameTracker(db.Model):
         return "Sorry that's not a picture of a " + self.topic + "."
 
     def give_points(self, phone_num):
-        player = Players.query.get(phone_num)
+        player = Player.query.get(phone_num)
         points_received = 3 - self.pics_received
         player.score += points_received
         db.session.commit()
