@@ -1,7 +1,7 @@
 from flask import Flask, request, redirect
 import twilio.twiml
-import config.py
-from twilio.rest import TwilioRestClient 
+# import config.py
+# from twilio.rest import TwilioRestClient 
 
 app = Flask(__name__)
 
@@ -11,7 +11,7 @@ player_names = dict([('+19087272654',"Vincent")])
 player_answers = dict([('+19087272654',"https://www.extension.umd.edu/sites/default/files/resize/_images/programs/viticulture/table-grapes-74344_640-498x291.jpg")])
 player_scores = dict([('+19087272654',0)])
 pics_received = 0
-client = TwilioRestClient(ACCOUNT, TOKEN) 
+# client = TwilioRestClient(ACCOUNT, TOKEN) 
 
 master = "+19087272654"
 host = "+16693421879"
@@ -53,9 +53,9 @@ def respond_to_message():
             topic = from_message
             message = ('Messaging all the players to find "'+from_message+'".')
             #message all the players what to find
-            for player in player_names:
-            	client.messages.create(to=player[0],from_=host,body=message)
-            return ''
+            # for player in player_names:
+            # 	client.messages.create(to=player[0],from_=host,body=message)
+            # return ''
         if from_number in player_names and players[from_number] == None:
             players[from_number] = from_message
             message = ('Thanks "'+from_message+'"! I\'ll let you know what to find soon."')
@@ -75,7 +75,7 @@ def respond_to_message():
         			pics_received = 0
         			Topic = None
         			#message the master to get a new topic
-        			client.messages.create(to=master,from_=host,body="Please send me a new item for the participants to find.")
+        			# client.messages.create(to=master,from_=host,body="Please send me a new item for the participants to find.")
         			ls = ""
         			for item in player_scores:
         				ls += (player_names[item[0]]+" has "+str(item[1])+" points.\n")
