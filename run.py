@@ -1,6 +1,8 @@
-from flask.ext.sqlalchemy import SQLAlchemy
-
 from game_tracker import GameTracker
+
+import os
+
+from flask.ext.sqlalchemy import SQLAlchemy
 from flask import Flask, request, redirect
 
 app = Flask(__name__)
