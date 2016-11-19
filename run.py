@@ -1,21 +1,23 @@
+from flask.ext.sqlalchemy import SQLAlchemy
+
 from game_tracker import GameTracker
-# import twilio.twiml
-from flask import Flask, request, redirect, session
+from flask import Flask, request, redirect
 
 app = Flask(__name__)
-app.secret_key = "super secret key"
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
+db = SQLAlchemy(app)
 
-# GAME_TRACKER = GameTracker()
+GAME_TRACKER = GameTracker()
 
 def parse_message(msg):
     return (msg.get('From', None), msg.get('Body', ''), msg.get('MediaUrl0', None))
 
 @app.route("/", methods=['GET', 'POST'])
 def respond_to_message():
-    topic= session.get('topic', None)
-    pics_received = session.get('pics_received', 0)
-    players = session.get('players', None)
-    GAME_TRACKER = GameTracker(topic, pics_received, players)
+    # topic= None
+    # pics_received = 0
+    # players = None
+    # GAME_TRACKER = GameTracker(topic, pics_received, players)
     from_number, body, pic_url = parse_message(request.values)
     # numMedia = request.values.get('NumMedia', 0)
     # pic_url = None

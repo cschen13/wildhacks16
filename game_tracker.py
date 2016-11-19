@@ -14,8 +14,7 @@ class GameTracker(object):
         self.prizes_per_round = 3
 
     def add_player(self, phone_num):
-        # self.players[phone_num] = Player()
-        self.players[phone_num] = [None, 0]
+        self.players[phone_num] = Player()
         msg = ("You have entered the game. Message me back with your "
                "player name. Message me \"done\" at anytime to leave.")
         self.send_message(phone_num, msg)
@@ -28,8 +27,7 @@ class GameTracker(object):
         return msg
 
     def set_player_name(self, phone_num, name):
-        # self.players[phone_num].name = name
-        self.players[phone_num][0] = name
+        self.players[phone_num].name = name
         msg = "Thanks " + name + "! You're looking for a " + self.topic
         self.send_message(phone_num, msg)
         return msg
@@ -42,30 +40,28 @@ class GameTracker(object):
         return "Sorry that's not a picture of a " + self.topic + "."
 
     def give_points(self, phone_num):
-        # self.players[phone_num].score += (3 - self.pics_received)
         points_received = 3 - self.pics_received
-        self.players[phone_num][1] += points_received
+        self.players[phone_num].score += points_received
         self.pics_received += 1
         msg = ("Congrats this picture is a match! You have earned "
                + str(points_received) + " points. You now have "
-               # + str(players[phone_num].score) + " points.")
-               + str(self.players[phone_num][1]) + " points.")
+               + str(players[phone_num].score) + " points.")
         self.send_message(phone_num, msg)
         if self.pics_received == self.prizes_per_round:
             self.pics_received = 0
-            # self.send_leaderboard()
+            self.send_leaderboard()
             self.change_topic()
         return msg
 
-    # def send_leaderboard(self):
-    #     leaderboard = []
-    #     for player in self.players.iteritems():
-    #         leaderboard.append((player.name, player.score))
-    #     leaderboard = sorted(leaderboard, key=lambda x: x[1], reverse=True)
-    #     ls = ""
-    #     for player in leaderboard:
-    #         ls += (player[0] + " has " + str(player[1]) + " points.\n")
-    #     self.send_to_all_players("The new standings are:\n" + ls)
+    def send_leaderboard(self):
+        leaderboard = []
+        for player in self.players.iteritems():
+            leaderboard.append((player.name, player.score))
+        leaderboard = sorted(leaderboard, key=lambda x: x[1], reverse=True)
+        ls = ""
+        for player in leaderboard:
+            ls += (player[0] + " has " + str(player[1]) + " points.\n")
+        self.send_to_all_players("The new standings are:\n" + ls)
 
     def change_topic(self):
         msg = "The new topic is chair." # TODO:
