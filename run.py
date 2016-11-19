@@ -22,6 +22,7 @@ def respond_to_message():
         print "WARNING: from number not found."
         return ''
     print "Message from", from_number, "saying", from_message
+    print GAME_TRACKER.players
     if from_number not in GAME_TRACKER.players:
         resp = GAME_TRACKER.add_player(from_number)
     elif "done" in from_message.lower():
