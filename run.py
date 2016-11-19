@@ -142,7 +142,7 @@ def respond_to_message():
         return ''
     print "Message from", from_number, "saying", body
     # if from_number not in Player.query.all():
-    if not Player.query.get(phone_num):
+    if not Player.query.get(from_number):
         resp = GAME_TRACKER.add_player(from_number)
     elif "done" in body.lower():
         resp = GAME_TRACKER.remove_player(from_number)
