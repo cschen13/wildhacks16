@@ -72,7 +72,7 @@ class GameTracker(db.Model):
         return msg
 
     def set_player_name(self, phone_num, name):
-        self.players[phone_num].name = name
+        Players.query.get(phone_num).name = name
         msg = "Thanks " + name + "! You're looking for a " + self.topic
         self.send_message(phone_num, msg)
         return msg
@@ -86,7 +86,7 @@ class GameTracker(db.Model):
 
     def give_points(self, phone_num):
         points_received = 3 - self.pics_received
-        self.players[phone_num].score += points_received
+        Players.query.get(phone_num).score += points_received
         self.pics_received += 1
         msg = ("Congrats this picture is a match! You have earned "
                + str(points_received) + " points. You now have "
@@ -100,12 +100,12 @@ class GameTracker(db.Model):
 
     def send_leaderboard(self):
         leaderboard = []
-        for player in self.players.iteritems():
+        for player in Player.query.all():
             leaderboard.append((player.name, player.score))
         leaderboard = sorted(leaderboard, key=lambda x: x[1], reverse=True)
-        ls = ""
+        standings = ""
         for player in leaderboard:
-            ls += (player[0] + " has " + str(player[1]) + " points.\n")
+            standings += (player[0] + " has " + str(player[1]) + " points.\n")
         self.send_to_all_players("The new standings are:\n" + ls)
 
     def change_topic(self):
@@ -190,13 +190,11 @@ def respond_to_message():
         print "WARNING: from number not found."
         return ''
     print "Message from", from_number, "saying", body
-    print GAME_TRACKER.players
-    if from_number not in GAME_TRACKER.players:
+    if from_number not in Player.query.all():
         resp = GAME_TRACKER.add_player(from_number)
     elif "done" in body.lower():
         resp = GAME_TRACKER.remove_player(from_number)
-    # elif not GAME_TRACKER.players[from_number].name:
-    elif not GAME_TRACKER.players[from_number][0]:
+    elif not Player.query.get(phone_num).name:
         resp = GAME_TRACKER.set_player_name(from_number, body)
     # elif not GAME_TRACKER.topic:
     #     resp = "Sorry! Submissions are closed."
