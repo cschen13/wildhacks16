@@ -1,4 +1,3 @@
-import os
 # import twilio.twiml
 from game_tracker import GameTracker
 

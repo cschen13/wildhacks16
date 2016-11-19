@@ -1,3 +1,5 @@
+import os
+
 from player import Player
 from twilio.rest import TwilioRestClient 
 
