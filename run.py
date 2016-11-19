@@ -1,34 +1,35 @@
-from modules.game_tracker import GameTracker
-from modules import db
+# from modules.game_tracker import GameTracker
+# from modules import db
+from modules import GAME_TRACKER
 
 import os
 
 from flask import Flask, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 
-def create_app():
-    app = Flask(__name__)
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
-    # app.register_blueprint(api)
-    db.init_app(app)
-    with app.app_context():
-    # with app.test_request_context():
-        from modules.game_tracker import GameTracker
-        from modules.player import Player
-        db.create_all(app=app)
-    return app
+# def create_app():
+#     app = Flask(__name__)
+#     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
+#     # app.register_blueprint(api)
+#     db.init_app(app)
+#     with app.app_context():
+#     # with app.test_request_context():
+#         from modules.game_tracker import GameTracker
+#         from modules.player import Player
+#         db.create_all()
+#     return app
 
-app = create_app()
-# app = Flask(__name__)
-# app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
+# app = create_app()
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 # # db = SQLAlchemy(app)
 # db.init_app(app)
 # with app.test_request_context():
 #     db.create_all()
 
-GAME_TRACKER = GameTracker()
-db.session.add(GAME_TRACKER)
-db.session.commit()
+# GAME_TRACKER = GameTracker()
+# db.session.add(GAME_TRACKER)
+# db.session.commit()
 
 def parse_message(msg):
     return (msg.get('From', None), msg.get('Body', ''), msg.get('MediaUrl0', None))
