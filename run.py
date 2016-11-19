@@ -31,7 +31,8 @@ def respond_to_message():
         resp = GAME_TRACKER.add_player(from_number)
     elif "done" in from_message.lower():
         resp = GAME_TRACKER.remove_player(from_number)
-    elif not GAME_TRACKER.players[from_number].name:
+    # elif not GAME_TRACKER.players[from_number].name:
+    elif not GAME_TRACKER.players[from_number][0]:
         resp = GAME_TRACKER.set_player_name(from_number, from_message)
     elif not GAME_TRACKER.topic:
         resp = "Sorry! Submissions are closed."
