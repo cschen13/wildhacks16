@@ -9,6 +9,7 @@ GAME_TRACKER = GameTracker()
 
 @app.route("/", methods=['GET', 'POST'])
 def respond_to_message():
+    global GAME_TRACKER
     from_number = request.values.get('From', None)
     from_message = request.values.get('Body', '')
     picture_url = request.values.get('MediaUrl0', None)
