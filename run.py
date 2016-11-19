@@ -15,11 +15,12 @@ topic = None
 def respond_to_message():
     from_number = request.values.get('From', None)
     from_message = request.values.get('Body', '')
+    media = request.values.get('MediaUrl0','')
     resp = twilio.twiml.Response()
     if from_number:
         print "Message from", from_number, "saying", from_message
 
-        message = from_message
+        message = media
         resp.message(message)
         return str(resp)
 
