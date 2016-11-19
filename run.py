@@ -10,6 +10,8 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 db = SQLAlchemy(app)
 
 GAME_TRACKER = GameTracker()
+db.session.add(GAME_TRACKER)
+db.session.commit()
 
 def parse_message(msg):
     return (msg.get('From', None), msg.get('Body', ''), msg.get('MediaUrl0', None))
@@ -47,9 +49,6 @@ def respond_to_message():
     else:
         resp = "You're supposed to send a picture, idiot"
         GAME_TRACKER.send_message(from_number, resp)
-    session['topic'] = GAME_TRACKER.topic
-    session['pics_received'] = GAME_TRACKER.pics_received
-    session['players'] = GAME_TRACKER.players
     return resp
 
 if __name__ == '__main__':

@@ -1,27 +1,34 @@
 import os
-
+from run import db
 from player import Player
-from twilio.rest import TwilioRestClient 
+from twilio.rest import TwilioRestClient
 
-class GameTracker(object):
-    def __init__(self, topic=None, pics_received=0, players=None):
+class GameTracker(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    topic = db.Column(db.String(120))
+    pics_received = db.Column(db.Integer)
+
+    def __init__(self, topic=None, pics_received=0):
         if not topic:
             topic = "chair"
         self.topic = topic
         self.pics_received = pics_received
-        self.players = players if players else {}
         self.twilio_client = TwilioClient()
         self.prizes_per_round = 3
 
     def add_player(self, phone_num):
-        self.players[phone_num] = Player()
+        player = Player(phone_num)
+        db.session.add(player)
+        db.session.commit()
         msg = ("You have entered the game. Message me back with your "
                "player name. Message me \"done\" at anytime to leave.")
         self.send_message(phone_num, msg)
         return msg
 
     def remove_player(self, phone_num):
-        del self.players[phone_num]
+        player = Player.query.get(phone_num)
+        db.session.delete(player)
+        db.session.commit()
         msg = "You have left the game. Message me anything if you want to join in."
         self.send_message(phone_num, msg)
         return msg
@@ -68,7 +75,7 @@ class GameTracker(object):
         self.send_to_all_players(msg)
 
     def send_to_all_players(self, msg):
-        for player in self.players:
+        for player in Player.query.all():
             self.twilio_client.send_message(player, msg)
 
     def send_message(self, to, msg):
