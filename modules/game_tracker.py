@@ -1,6 +1,8 @@
 import os
-from player import Player
 from twilio.rest import TwilioRestClient
+
+from modules.player import Player
+from modules.shared import db
 
 class GameTracker(db.Model):
     id = db.Column(db.Integer, primary_key=True)

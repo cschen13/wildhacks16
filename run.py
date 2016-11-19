@@ -1,4 +1,5 @@
-from game_tracker import GameTracker
+from modules.game_tracker import GameTracker
+from modules.shared import db
 
 import os
 
@@ -7,7 +8,8 @@ from flask import Flask, request, redirect
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
-db = SQLAlchemy(app)
+# db = SQLAlchemy(app)
+db.init_app(app)
 
 GAME_TRACKER = GameTracker()
 db.session.add(GAME_TRACKER)
