@@ -26,7 +26,7 @@ class GameTracker(object):
 
     def set_player_name(self, phone_num, name):
         self.players[phone_num].name = name
-        msg = "Thanks " + from_message + "! I'll let you know what to find soon."
+        msg = "Thanks " + name + "! I'll let you know what to find soon."
         self.send_message(phone_num, msg)
         return msg
 
