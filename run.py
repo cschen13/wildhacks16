@@ -17,7 +17,7 @@ def respond_to_message():
             callers.remove(from_number)
         else:
             message = ('"'+from_message+
-                '". Really? That\'s the dumbest thing I\'ve ever heard')
+                '". Really? That\'s the dumbest thing I\'ve ever heard. VINCENT EDIT')
             resp = twilio.twiml.Response()
             resp.message(message)
             return str(resp)
