@@ -1,4 +1,4 @@
-from modules.shared import db
+from modules import db
 
 class Player(db.Model):
     phone_num = db.Column(db.String(15), primary_key=True)

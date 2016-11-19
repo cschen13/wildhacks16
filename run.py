@@ -1,11 +1,11 @@
 from modules.game_tracker import GameTracker
 from modules.player import Player
-from modules.shared import db
+from modules import db
 
 import os
 
-from flask.ext.sqlalchemy import SQLAlchemy
 from flask import Flask, request, redirect
+from flask_sqlalchemy import SQLAlchemy
 
 def create_app():
     app = Flask(__name__)
