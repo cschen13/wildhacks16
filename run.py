@@ -141,7 +141,8 @@ def respond_to_message():
         print "WARNING: from number not found."
         return ''
     print "Message from", from_number, "saying", body
-    if from_number not in Player.query.all():
+    # if from_number not in Player.query.all():
+    if not Player.query.get(phone_num):
         resp = GAME_TRACKER.add_player(from_number)
     elif "done" in body.lower():
         resp = GAME_TRACKER.remove_player(from_number)
