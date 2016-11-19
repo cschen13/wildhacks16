@@ -1,43 +1,12 @@
-# from modules.game_tracker import GameTracker
-# from modules import db
-# from modules import GAME_TRACKER
-
 import os
 
 from twilio.rest import TwilioRestClient
 from flask import Flask, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 
-# def create_app():
-#     app = Flask(__name__)
-#     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
-#     # app.register_blueprint(api)
-#     db.init_app(app)
-#     with app.app_context():
-#     # with app.test_request_context():
-#         from modules.game_tracker import GameTracker
-#         from modules.player import Player
-#         db.create_all()
-#     return app
-
-# app = create_app()
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 db = SQLAlchemy(app)
-# # db = SQLAlchemy(app)
-# db.init_app(app)
-# with app.test_request_context():
-#     db.create_all()
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -72,7 +41,9 @@ class GameTracker(db.Model):
         return msg
 
     def set_player_name(self, phone_num, name):
-        Players.query.get(phone_num).name = name
+        player = Players.query.get(phone_num)
+        player.name = name
+        db.session.commmit()
         msg = "Thanks " + name + "! You're looking for a " + self.topic
         self.send_message(phone_num, msg)
         return msg
@@ -85,8 +56,10 @@ class GameTracker(db.Model):
         return "Sorry that's not a picture of a " + self.topic + "."
 
     def give_points(self, phone_num):
+        player = Players.query.get(phone_num)
         points_received = 3 - self.pics_received
-        Players.query.get(phone_num).score += points_received
+        player.score += points_received
+        db.session.commit()
         self.pics_received += 1
         msg = ("Congrats this picture is a match! You have earned "
                + str(points_received) + " points. You now have "
@@ -96,6 +69,7 @@ class GameTracker(db.Model):
             self.pics_received = 0
             self.send_leaderboard()
             self.change_topic()
+        db.session.commit()
         return msg
 
     def send_leaderboard(self):
@@ -139,29 +113,6 @@ class Player(db.Model):
         self.phone_num = phone_num
         self.name = name
         self.score = 0
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
