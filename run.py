@@ -4,6 +4,7 @@ import twilio.twiml
 from flask import Flask, request, redirect, session
 
 app = Flask(__name__)
+sess = Session()
 
 GAME_TRACKER = GameTracker()
 
