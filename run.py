@@ -18,8 +18,6 @@ host = "+16693421879"
 
 topic = None
 
-pics_received = 0
-
 @app.route("/", methods=['GET', 'POST'])
 def respond_to_message():
     from_number = request.values.get('From', None)
@@ -34,9 +32,8 @@ def respond_to_message():
         print player_names
         print player_answers
         print player_scores
-        print pics_received
+        #print pics_received
         print callers
-        players
         if from_number not in callers:
             callers.add(from_number)
             player_names[from_number] = None
