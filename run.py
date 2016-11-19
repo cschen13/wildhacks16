@@ -6,6 +6,7 @@ from flask import Flask, request, redirect, session
 app = Flask(__name__)
 
 GAME_TRACKER = GameTracker()
+SECRET_KEY = 'not so secret'
 
 @app.route("/", methods=['GET', 'POST'])
 def respond_to_message():
