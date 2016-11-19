@@ -1,5 +1,4 @@
 from modules.game_tracker import GameTracker
-from modules.player import Player
 from modules import db
 
 import os
@@ -12,7 +11,10 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
     # app.register_blueprint(api)
     db.init_app(app)
-    with app.app_context():
+    # with app.app_context():
+    with app.test_request_context():
+        from modules.game_tracker import GameTracker
+        from modules.player import Player
         db.create_all()
     return app
 
