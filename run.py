@@ -18,6 +18,8 @@ host = "+16693421879"
 
 topic = None
 
+pics_received = 0
+
 @app.route("/", methods=['GET', 'POST'])
 def respond_to_message():
     from_number = request.values.get('From', None)
