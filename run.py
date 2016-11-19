@@ -67,7 +67,7 @@ def respond_to_message():
         	if accurate_picture:
         		player_scores[from_number] += 3-pics_received
         		pics_received = pics_received+1
-        		message = ('Congrats this picture is a match! You have earned "'+3-pics_received+'" points. You now have "'+player_scores[from_number]'" points.')
+        		message = ('Congrats this picture is a match! You have earned "'+str(3-pics_received)+'" points. You now have "'+str(player_scores[from_number])'" points.')
         		if pics_received == 3:
         			pics_received = 0
         			Topic = None
