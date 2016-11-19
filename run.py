@@ -1,7 +1,7 @@
 # import twilio.twiml
 from game_tracker import GameTracker
 
-from flask import Flask, request, redirect
+from flask import Flask, request, redirect, session
 
 app = Flask(__name__)
 
@@ -9,7 +9,7 @@ GAME_TRACKER = GameTracker()
 
 @app.route("/", methods=['GET', 'POST'])
 def respond_to_message():
-    global GAME_TRACKER
+    GAME_TRACKER = session.get('gt',GameTracker())
     from_number = request.values.get('From', None)
     from_message = request.values.get('Body', '')
     picture_url = request.values.get('MediaUrl0', None)
@@ -37,6 +37,7 @@ def respond_to_message():
     else:
         resp = "You're supposed to send a picture, idiot"
     # resp.message(message)
+    session['gt'] = GAME_TRACKER
     return resp
 
 if __name__ == "__main__":
