@@ -25,7 +25,7 @@ class GameTracker(object):
         return msg
 
     def set_player_name(self, phone_num, name):
-        self.players[from_number].name = name
+        self.players[phone_num].name = name
         msg = "Thanks " + from_message + "! I'll let you know what to find soon."
         self.send_message(phone_num, msg)
         return msg
@@ -34,7 +34,7 @@ class GameTracker(object):
         #return whether or not this is an accurate picture using clarifai api
         accurate_picture = True # TODO:
         if accurate_picture:
-            return self.give_points(from_number)
+            return self.give_points(phone_num)
         return "Sorry that's not a picture of a " + self.topic + "."
 
     def give_points(self, phone_num):
@@ -43,7 +43,7 @@ class GameTracker(object):
         points_received = str(3 - pics_received)
         message = ("Congrats this picture is a match! You have earned "
                    + points_received + " points. You now have "
-                   + players[from_number].score + " points.")
+                   + players[phone_num].score + " points.")
         if self.pics_received == self.prizes_per_round:
             self.pics_received = 0
             self.send_leaderboard()
