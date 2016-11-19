@@ -10,15 +10,18 @@ def respond_to_message():
     from_number = request.values.get('From', None)
     from_message = request.values.get('Body', '')
     if from_number:
+        print "Message from", from_number, "saying", from_message
         if from_number not in callers:
             callers.add(from_number)
         if from_message.lower() == "done":
             callers.remove(from_number)
         else:
-            message = "Monkey, thanks for the message!"
+            message = ('"'+from_message+
+                '". Really? That\'s the dumbest thing I\'ve ever heard')
             resp = twilio.twiml.Response()
             resp.message(message)
             return str(resp)
+    return ''
 
 if __name__ == "__main__":
     app.run(debug=True)
