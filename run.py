@@ -10,7 +10,7 @@ player_names = dict([('+19087272654',"Vincent")])
 player_answers = dict([('+19087272654',"https://www.extension.umd.edu/sites/default/files/resize/_images/programs/viticulture/table-grapes-74344_640-498x291.jpg")])
 player_scores = dict([('+19087272654',0)])
 pics_received = 0
-client = TwilioRestClient(ACCOUNT_SID, AUTH_TOKEN) 
+client = TwilioRestClient(ACCOUNT, TOKEN) 
 
 master = "+19087272654"
 host = "+16693421879"
