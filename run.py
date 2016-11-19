@@ -34,8 +34,9 @@ def respond_to_message():
     # elif not GAME_TRACKER.players[from_number].name:
     elif not GAME_TRACKER.players[from_number][0]:
         resp = GAME_TRACKER.set_player_name(from_number, from_message)
-    elif not GAME_TRACKER.topic:
-        resp = "Sorry! Submissions are closed."
+    # elif not GAME_TRACKER.topic:
+    #     resp = "Sorry! Submissions are closed."
+    #     GAME_TRACKER.send_message(from_number, resp)
     # if numMedia > 0:
     elif picture_url:
         resp = GAME_TRACKER.judge_picture(from_number, picture_url)

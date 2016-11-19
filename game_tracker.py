@@ -5,6 +5,8 @@ from twilio.rest import TwilioRestClient
 
 class GameTracker(object):
     def __init__(self,topic=None,pics_received=0,players={}):
+        if not topic:
+            topic = "chair"
         self.topic = topic
         self.pics_received = pics_received
         self.players = players
@@ -28,7 +30,7 @@ class GameTracker(object):
     def set_player_name(self, phone_num, name):
         # self.players[phone_num].name = name
         self.players[phone_num][0] = name
-        msg = "Thanks " + name + "! I'll let you know what to find soon."
+        msg = "Thanks " + name + "! You're looking for a " + self.topic
         self.send_message(phone_num, msg)
         return msg
 
@@ -44,10 +46,11 @@ class GameTracker(object):
         self.players[phone_num][1] += (3 - self.pics_received)
         self.pics_received += 1
         points_received = str(3 - pics_received)
-        message = ("Congrats this picture is a match! You have earned "
-                   + points_received + " points. You now have "
-                   # + str(players[phone_num].score) + " points.")
-                   + str(players[phone_num][1]) + " points.")
+        msg = ("Congrats this picture is a match! You have earned "
+               + points_received + " points. You now have "
+               # + str(players[phone_num].score) + " points.")
+               + str(players[phone_num][1]) + " points.")
+        self.send_message(phone_num, msg)
         if self.pics_received == self.prizes_per_round:
             self.pics_received = 0
             # self.send_leaderboard()
