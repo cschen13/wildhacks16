@@ -1,9 +1,11 @@
 from flask import Flask, request, redirect
 import twilio.twiml
-# import config.py
-# from twilio.rest import TwilioRestClient 
+from twilio.rest import TwilioRestClient 
 
 app = Flask(__name__)
+
+ACCOUNT = os.environ['ACCOUNT']
+TOKEN = os.environ['TOKEN']
 
 callers = set(["+12246221941"])
 
@@ -11,7 +13,7 @@ player_names = dict([('+19087272654',"Vincent")])
 player_answers = dict([('+19087272654',"https://www.extension.umd.edu/sites/default/files/resize/_images/programs/viticulture/table-grapes-74344_640-498x291.jpg")])
 player_scores = dict([('+19087272654',0)])
 pics_received = 0
-# client = TwilioRestClient(ACCOUNT, TOKEN) 
+client = TwilioRestClient(ACCOUNT, TOKEN)
 
 master = "+19087272654"
 host = "+16693421879"
@@ -39,7 +41,7 @@ def respond_to_message():
             player_names[from_number] = None
             player_answers[from_number] = None
             player_scores[from_number] = 0
-            message = "You have entered the game. Message me back with your player name. Message me \'done\' at anytime to leave."
+            message = "You have entered the game. Message me back with your player name. Message me \"done\" at anytime to leave."
         if "done" in from_message.lower():
             callers.remove(from_number)
             message = "You have left the game. Message me anything if you want to join in"
@@ -50,14 +52,14 @@ def respond_to_message():
         	return ''
         if from_number == master:
             topic = from_message
-            message = ('Messaging all the players to find "'+from_message+'".')
+            message = ('Messaging all the players to find '+from_message+'.')
             #message all the players what to find
             # for player in player_names:
             # 	client.messages.create(to=player[0],from_=host,body=message)
             # return ''
         if from_number in player_names and players[from_number] == None:
             players[from_number] = from_message
-            message = ('Thanks "'+from_message+'"! I\'ll let you know what to find soon."')
+            message = ('Thanks '+from_message+'! I\'ll let you know what to find soon.')
         if numMedia > 0:
         	player_answers[from_number] = media
         	if topic == None:
@@ -69,7 +71,8 @@ def respond_to_message():
         		pics_received = pics_received+1
         		points_received = str(3-pics_received)
         		current_points = str(player_scores[from_number])
-        		message = ('Congrats this picture is a match! You have earned "'+points_received+'" points. You now have "'+current_points+'" points.')
+        		message = ('Congrats this picture is a match! You have earned '
+                    +points_received+' points. You now have '+current_points+' points.')
         		if pics_received == 3:
         			pics_received = 0
         			Topic = None
