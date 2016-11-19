@@ -7,8 +7,6 @@ app = Flask(__name__)
 
 GAME_TRACKER = GameTracker()
 
-players = {"+19087272654": Player("Vincent")}
-
 @app.route("/", methods=['GET', 'POST'])
 def respond_to_message():
     from_number = request.values.get('From', None)
