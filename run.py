@@ -4,13 +4,13 @@ import twilio.twiml
 from flask import Flask, request, redirect, session
 
 app = Flask(__name__)
-sess = Session()
+app.secret_key = "super secret key"
 
-GAME_TRACKER = GameTracker()
+#GAME_TRACKER = GameTracker()
 
 @app.route("/", methods=['GET', 'POST'])
 def respond_to_message():
-    GAME_TRACKER = sess.get('gt',GameTracker())
+    GAME_TRACKER = session.get('gt',GameTracker())
     from_number = request.values.get('From', None)
     from_message = request.values.get('Body', '')
     picture_url = request.values.get('MediaUrl0', None)
@@ -38,14 +38,17 @@ def respond_to_message():
     else:
         resp = "You're supposed to send a picture, idiot"
     # resp.message(message)
-    sess['gt'] = GAME_TRACKER
+    session['gt'] = GAME_TRACKER
     return resp
 
-if __name__ == "__main__":
-    app.secret_key = 'super secret key'
-    app.config['SESSION_TYPE'] = 'filesystem'
+# if __name__ == "__main__":
+#     app.secret_key = 'super secret key'
+#     app.config['SESSION_TYPE'] = 'filesystem'
 
-    sess.init_app(app)
+#     sess.init_app(app)
 
+#     app.debug = True
+#     app.run()
+if __name__ == '__main__':
     app.debug = True
     app.run()
