@@ -42,6 +42,7 @@ def respond_to_message():
         resp = GAME_TRACKER.judge_picture(from_number, pic_url)
     else:
         resp = "You're supposed to send a picture, idiot"
+        GAME_TRACKER.send_message(from_number, resp)
     session['topic'] = GAME_TRACKER.topic
     session['pics_received'] = GAME_TRACKER.pics_received
     session['players'] = GAME_TRACKER.players
