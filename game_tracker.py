@@ -1,5 +1,4 @@
 import os
-from run import db
 from player import Player
 from twilio.rest import TwilioRestClient
 
