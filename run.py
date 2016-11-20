@@ -103,7 +103,8 @@ class GameController(object):
         standings = ""
         for player in leaderboard:
             standings += ("{0}: {1} points\n".format(player[0], player[1]))
-        self.send_to_all_players("The new standings are:\n{0}".format(standings))
+        msg = "The new standings are:\n{0}".format(standings)
+        self.send_to_all_players(msg)
 
     def change_topic(self):
         self.topic = self.recognizer.get_random_topic()
@@ -112,7 +113,7 @@ class GameController(object):
 
     def send_to_all_players(self, msg):
         for player in Player.query.all():
-            self.twilio_client.send_message(player, msg)
+            self.send_message(player.phone_num, msg)
 
     def send_message(self, to, msg):
         self.twilio_client.send_message(to, msg)
