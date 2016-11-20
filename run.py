@@ -94,7 +94,7 @@ class GameController(object):
         standings = ""
         for player in leaderboard:
             standings += (player[0] + " has " + str(player[1]) + " points.\n")
-        self.send_to_all_players("The new standings are:\n" + ls)
+        self.send_to_all_players("The new standings are:\n" + standings)
 
     def change_topic(self):
         msg = "The new topic is chair." # TODO:
