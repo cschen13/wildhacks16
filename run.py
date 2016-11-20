@@ -99,7 +99,7 @@ class GameController(object):
             return msg
 
     def give_points(self, phone_num):
-        winner = Winner(phone_num)
+        winner = Winners(phone_num)
         db.session.add(winner)
         db.session.commit()
         player = Player.query.get(phone_num)
