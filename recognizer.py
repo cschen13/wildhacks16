@@ -7,7 +7,8 @@ class Recognizer:
 		self.model = self.app.models.get('general-v1.3')
 		self.categories = {'fruit': ['fruit', 'apple', 'banana', 'orange', 'grapes'],
 						   'computer': ['computer', 'laptop'],
-						   'selfie': ['portrait']}
+						   'selfie': ['portrait'],
+						   'chair': ['chair', 'seat']}
 		self.threshold = 0.90
 
 	def get_random_topic(self):
