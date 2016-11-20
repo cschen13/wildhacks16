@@ -88,7 +88,8 @@ class GameController(object):
 
     def judge_picture(self, phone_num, picture_url):
         if Winners.query.get(phone_num) is not None:
-            self.punish_cheater(phone_num)
+            msg = self.punish_cheater(phone_num)
+            return msg
         #return whether or not this is an accurate picture using clarifai api
         accurate_picture = self.recognizer.judge(self.topic, picture_url)
         if accurate_picture:
