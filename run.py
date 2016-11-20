@@ -3,6 +3,10 @@ import os
 from twilio.rest import TwilioRestClient
 from flask import Flask, request, redirect
 from flask_sqlalchemy import SQLAlchemy
+from recognizer import Recognizer
+
+CLARIFAI_APP_ID = os.environ['CLARIFAI_ID']
+CLARIFAI_APP_SECRET = os.environ['CLARIFAI_SECRET']
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
@@ -26,7 +30,8 @@ class GameTracker(db.Model):
 
     def __init__(self, topic=None, pics_received=0):
         if not topic:
-            topic = "chair"
+            r = Recognizer()
+            topic = r.get_random_topic()
         self.topic = topic
         self.pics_received = pics_received
 
@@ -36,6 +41,7 @@ class GameController(object):
         self.pics_received = state.pics_received
         self.twilio_client = TwilioClient()
         self.prizes_per_round = 3
+        self.recognizer = Recognizer()
 
     def add_player(self, phone_num):
         player = Player(phone_num)
@@ -64,7 +70,7 @@ class GameController(object):
 
     def judge_picture(self, phone_num, picture_url):
         #return whether or not this is an accurate picture using clarifai api
-        accurate_picture = True # TODO:
+        accurate_picture = self.recognizer.judge(self.topic, picture_url)
         if accurate_picture:
             return self.give_points(phone_num)
         return "Sorry that's not a picture of a " + self.topic + "."
@@ -97,7 +103,8 @@ class GameController(object):
         self.send_to_all_players("The new standings are:\n" + standings)
 
     def change_topic(self):
-        msg = "The new topic is chair." # TODO:
+        self.topic = self.recognizer.get_random_topic()
+        msg = "The new topic is {0}.".format(self.topic)
         self.send_to_all_players(msg)
 
     def send_to_all_players(self, msg):

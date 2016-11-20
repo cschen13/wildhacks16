@@ -10,6 +10,9 @@ class Recognizer:
 						   'selfie': ['portrait']}
 		self.threshold = 0.90
 
+	def get_random_topic(self):
+		return random.choice(self.categories.keys())
+
 	def judge(self, category=None, url=None):
 		if url is None or category is None:
 			return False
