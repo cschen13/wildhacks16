@@ -10,10 +10,10 @@ db = SQLAlchemy(app)
 
 
 
-class GameTracker(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    topic = db.Column(db.String(120))
-    pics_received = db.Column(db.Integer)
+class GameTracker(object):
+    # id = db.Column(db.Integer, primary_key=True)
+    # topic = db.Column(db.String(120))
+    # pics_received = db.Column(db.Integer)
 
     def __init__(self, topic=None, pics_received=0):
         if not topic:
@@ -69,7 +69,7 @@ class GameTracker(db.Model):
             self.pics_received = 0
             self.send_leaderboard()
             self.change_topic()
-        db.session.commit()
+        # db.session.commit()
         return msg
 
     def send_leaderboard(self):
@@ -120,8 +120,8 @@ class Player(db.Model):
 
 
 GAME_TRACKER = GameTracker()
-db.session.add(GAME_TRACKER)
-db.session.commit()
+# db.session.add(GAME_TRACKER)
+# db.session.commit()
 
 def parse_message(msg):
     return (msg.get('From', None), msg.get('Body', ''), msg.get('MediaUrl0', None))
