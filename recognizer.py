@@ -14,7 +14,7 @@ class Recognizer:
 						   'door': ['door', 'entrance'],
 						   'backpack': ['backpack'],
 						   'watch': ['watch'],
-						   'bottle': ['bottle']
+						   'bottle': ['bottle'],
 						   'drink': ['drink']
 						  }
 		self.threshold = 0.90
