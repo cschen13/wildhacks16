@@ -58,7 +58,9 @@ class GameController(object):
         db.session.add(player)
         db.session.commit()
         msg = ("You have entered the game. Message me back with your "
-               "player name. Message me \"done\" at anytime to leave.")
+               "player name. Message me \"done\" at anytime to leave. "
+               "You can also check the current standings by sending me "
+               "\"standings\".")
         self.send_message(phone_num, msg)
         return msg
 
@@ -72,10 +74,7 @@ class GameController(object):
 
     def remove_all_players(self):
         for player in Player.query.all():
-            db.session.delete(player)
-            msg = "You have left the game. Message me anything if you want to join in."
-            self.send_message(phone_num, msg)
-        db.session.commit()
+            _ = self.remove_player(player.phone_num)
         return "All players removed."
 
     def set_player_name(self, phone_num, name):
@@ -198,7 +197,7 @@ def respond_to_message():
         resp = game_controller.remove_player(from_number)
     elif "reset" in body.lower():
         resp = game_controller.remove_all_players()
-    elif "leaderboard" in body.lower():
+    elif "standings" in body.lower():
         resp = game_controller.send_leaderboard(from_number)
     elif Player.query.get(from_number).name is None:
         resp = game_controller.set_player_name(from_number, body)
