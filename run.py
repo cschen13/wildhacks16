@@ -112,7 +112,7 @@ class GameController(object):
                + str(points_received) + " points. You now have "
                + str(player.score) + " points.")
         self.send_message(phone_num, msg)
-        if self.pics_received == self.prizes_per_round:
+        if self.pics_received >= self.prizes_per_round:
             self.pics_received = 0
             self.send_leaderboard()
             self.change_topic()
@@ -128,7 +128,7 @@ class GameController(object):
         self.send_message(phone_num, msg)
         return msg
 
-    def send_leaderboard(self):
+    def send_leaderboard(self, phone_num=None):
         leaderboard = []
         for player in Player.query.all():
             if player.name is not None:
@@ -137,8 +137,12 @@ class GameController(object):
         standings = ""
         for player in leaderboard:
             standings += ("{0}: {1} points\n".format(player[0], player[1]))
-        msg = "The new standings are:\n{0}".format(standings)
-        self.send_to_all_players(msg)
+        msg = "The standings are:\n{0}".format(standings)
+        if phone_num is None:
+            self.send_to_all_players(msg)
+        else:
+            self.send_message(phone_num, msg)
+        return msg
 
     def reset_winners_table(self):
         for winner in Winners.query.all():
@@ -194,6 +198,8 @@ def respond_to_message():
         resp = game_controller.remove_player(from_number)
     elif "reset" in body.lower():
         resp = game_controller.remove_all_players()
+    elif "leaderboard" in body.lower():
+        resp = game_controller.send_leaderboard(from_number)
     elif Player.query.get(from_number).name is None:
         resp = game_controller.set_player_name(from_number, body)
     elif pic_url:
