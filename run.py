@@ -43,7 +43,7 @@ class GameTracker(db.Model):
     def set_player_name(self, phone_num, name):
         player = Player.query.get(phone_num)
         player.name = name
-        db.session.commmit()
+        db.session.commit()
         msg = "Thanks " + name + "! You're looking for a " + self.topic
         self.send_message(phone_num, msg)
         return msg
