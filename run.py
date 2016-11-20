@@ -11,8 +11,8 @@ CLARIFAI_APP_SECRET = os.environ['CLARIFAI_SECRET']
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 db = SQLAlchemy(app)
-db.create_all()
 
+## Database Tables
 class Player(db.Model):
     phone_num = db.Column(db.String(15), primary_key=True)
     name = db.Column(db.String(80))
@@ -40,6 +40,10 @@ class GameTracker(db.Model):
             topic = r.get_random_topic()
         self.topic = topic
         self.pics_received = pics_received
+
+## Create tables
+db.create_all()
+db.session.commit()
 
 class GameController(object):
     def __init__(self, state):
