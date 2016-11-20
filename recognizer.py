@@ -15,13 +15,14 @@ class Recognizer:
 						   'backpack': ['backpack'],
 						   'watch': ['watch'],
 						   'bottle': ['bottle']
+						   'drink': ['drink']
 						  }
 		self.threshold = 0.90
 
 	def get_random_topic(self):
 		print "Categories are: {0}".format(self.categories.keys())
 		topic = random.choice(self.categories.keys())
-		if topic == 'fruit':
+		if topic == 'fruit' or topic == 'drink':
 			self.model = self.app.models.get('food-items-v1.0')
 		else:
 			self.model = self.app.models.get('general-v1.3')
