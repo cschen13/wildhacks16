@@ -63,7 +63,7 @@ class GameTracker(db.Model):
         self.pics_received += 1
         msg = ("Congrats this picture is a match! You have earned "
                + str(points_received) + " points. You now have "
-               + str(players[phone_num].score) + " points.")
+               + str(player.score) + " points.")
         self.send_message(phone_num, msg)
         if self.pics_received == self.prizes_per_round:
             self.pics_received = 0
