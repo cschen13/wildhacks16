@@ -103,7 +103,8 @@ class GameController(object):
     def send_leaderboard(self):
         leaderboard = []
         for player in Player.query.all():
-            leaderboard.append((player.name, player.score))
+            if player.name is not None:
+                leaderboard.append((player.name, player.score))
         leaderboard = sorted(leaderboard, key=lambda x: x[1], reverse=True)
         standings = ""
         for player in leaderboard:
