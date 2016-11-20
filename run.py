@@ -19,7 +19,7 @@ class Player(db.Model):
         self.name = name
         self.score = 0
 
-class GameState(db.Model):
+class GameTracker(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     topic = db.Column(db.String(120))
     pics_received = db.Column(db.Integer)
@@ -30,7 +30,7 @@ class GameState(db.Model):
         self.topic = topic
         self.pics_received = pics_received
 
-class GameTracker(object):
+class GameController(object):
     def __init__(self, state):
         self.topic = state.topic
         self.pics_received = state.pics_received
@@ -126,16 +126,12 @@ def parse_message(msg):
 
 @app.route("/", methods=['GET', 'POST'])
 def respond_to_message():
-    game_state = GameState.query.get(1)
+    game_state = GameTracker.query.get(1)
     if not game_state:
-        game_state = GameState()
+        game_state = GameTracker()
         db.session.add(game_state)
         db.session.commit()
-    GAME_TRACKER = GameTracker(game_state)
-    # topic= None
-    # pics_received = 0
-    # players = None
-    # GAME_TRACKER = GameTracker(topic, pics_received, players)
+    game_controller = GameController(game_state)
     from_number, body, pic_url = parse_message(request.values)
     # numMedia = request.values.get('NumMedia', 0)
     # pic_url = None
@@ -147,24 +143,24 @@ def respond_to_message():
     print "Message from", from_number, "saying", body
     # if from_number not in Player.query.all():
     if not Player.query.get(from_number):
-        resp = GAME_TRACKER.add_player(from_number)
+        resp = game_controller.add_player(from_number)
     elif "done" in body.lower():
-        resp = GAME_TRACKER.remove_player(from_number)
+        resp = game_controller.remove_player(from_number)
     elif not Player.query.get(from_number).name:
-        resp = GAME_TRACKER.set_player_name(from_number, body)
-    # elif not GAME_TRACKER.topic:
+        resp = game_controller.set_player_name(from_number, body)
+    # elif not game_controller.topic:
     #     resp = "Sorry! Submissions are closed."
-    #     GAME_TRACKER.send_message(from_number, resp)
+    #     game_controller.send_message(from_number, resp)
     # if numMedia > 0:
     elif pic_url:
         print "Picture message with url:", pic_url
-        resp = GAME_TRACKER.judge_picture(from_number, pic_url)
+        resp = game_controller.judge_picture(from_number, pic_url)
     else:
         resp = "You're supposed to send a picture, idiot"
-        GAME_TRACKER.send_message(from_number, resp)
+        game_controller.send_message(from_number, resp)
 
-    game_state.topic = GAME_TRACKER.topic
-    game_state.pics_received = GAME_TRACKER.pics_received
+    game_state.topic = game_controller.topic
+    game_state.pics_received = game_controller.pics_received
     db.session.commit()
     return resp
 
