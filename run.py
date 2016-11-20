@@ -4,6 +4,11 @@ from twilio.rest import TwilioRestClient
 from flask import Flask, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
+db = SQLAlchemy(app)
+db.create_all()
+
 class Player(db.Model):
     phone_num = db.Column(db.String(15), primary_key=True)
     name = db.Column(db.String(80))
@@ -115,11 +120,6 @@ class TwilioClient(object):
 
 
 
-
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
-db = SQLAlchemy(app)
-db.create_all()
 
 def parse_message(msg):
     return (msg.get('From', None), msg.get('Body', ''), msg.get('MediaUrl0', None))
