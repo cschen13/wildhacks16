@@ -2,8 +2,8 @@ from clarifai.rest import ClarifaiApp
 import json
 
 class Recognizer:
-	def __init__(self):
-		self.app = ClarifaiApp()
+	def __init__(self, id, secret):
+		self.app = ClarifaiApp(app_id=id, app_secret=secret)
 		self.model = self.app.models.get('general-v1.3')
 		self.categories = {'fruit': ['fruit', 'apple', 'banana', 'orange', 'grapes'],
 						   'computer': ['computer', 'laptop'],

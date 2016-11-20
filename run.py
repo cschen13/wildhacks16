@@ -30,7 +30,7 @@ class GameTracker(db.Model):
 
     def __init__(self, topic=None, pics_received=0):
         if not topic:
-            r = Recognizer()
+            r = Recognizer(CLARIFAI_APP_ID, CLARIFAI_APP_SECRET)
             topic = r.get_random_topic()
         self.topic = topic
         self.pics_received = pics_received
@@ -41,7 +41,7 @@ class GameController(object):
         self.pics_received = state.pics_received
         self.twilio_client = TwilioClient()
         self.prizes_per_round = 3
-        self.recognizer = Recognizer()
+        self.recognizer = Recognizer(CLARIFAI_APP_ID, CLARIFAI_APP_SECRET)
 
     def add_player(self, phone_num):
         player = Player(phone_num)
@@ -64,7 +64,7 @@ class GameController(object):
         player = Player.query.get(phone_num)
         player.name = name
         db.session.commit()
-        msg = "Thanks " + name + "! You're looking for a " + self.topic
+        msg = "Thanks {0}! You're looking for a {1}.".format(name, self.topic)
         self.send_message(phone_num, msg)
         return msg
 
@@ -73,7 +73,10 @@ class GameController(object):
         accurate_picture = self.recognizer.judge(self.topic, picture_url)
         if accurate_picture:
             return self.give_points(phone_num)
-        return "Sorry that's not a picture of a " + self.topic + "."
+        else:
+            msg = "Sorry, I don't recognize that as a picture of a {0}.".format(self.topic)
+            self.send_message(phone_num, msg)
+            return msg
 
     def give_points(self, phone_num):
         player = Player.query.get(phone_num)
@@ -99,8 +102,8 @@ class GameController(object):
         leaderboard = sorted(leaderboard, key=lambda x: x[1], reverse=True)
         standings = ""
         for player in leaderboard:
-            standings += (player[0] + " has " + str(player[1]) + " points.\n")
-        self.send_to_all_players("The new standings are:\n" + standings)
+            standings += ("{0}: {1} points\n".format(player[0], player[1]))
+        self.send_to_all_players("The new standings are:\n{0}".format(standings))
 
     def change_topic(self):
         self.topic = self.recognizer.get_random_topic()
@@ -163,7 +166,7 @@ def respond_to_message():
         print "Picture message with url:", pic_url
         resp = game_controller.judge_picture(from_number, pic_url)
     else:
-        resp = "You're supposed to send a picture, idiot"
+        resp = "You're supposed to send a picture of a {0}, idiot".format(game_controller.topic)
         game_controller.send_message(from_number, resp)
 
     game_state.topic = game_controller.topic
