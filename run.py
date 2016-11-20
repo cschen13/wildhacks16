@@ -8,9 +8,17 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 db = SQLAlchemy(app)
 
+class Player(db.Model):
+    phone_num = db.Column(db.String(15), primary_key=True)
+    name = db.Column(db.String(80))
+    score = db.Column(db.Integer)
 
+    def __init__(self, phone_num, name=None):
+        self.phone_num = phone_num
+        self.name = name
+        self.score = 0
 
-class GameTracker(db.Model):
+class GameState(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     topic = db.Column(db.String(120))
     pics_received = db.Column(db.Integer)
@@ -20,6 +28,11 @@ class GameTracker(db.Model):
             topic = "chair"
         self.topic = topic
         self.pics_received = pics_received
+
+class GameTracker(object):
+    def __init__(self, state):
+        self.topic = state.topic
+        self.pics_received = state.pics_received
         self.twilio_client = TwilioClient()
         self.prizes_per_round = 3
 
@@ -104,22 +117,6 @@ class TwilioClient(object):
     def send_message(self, to, msg):
         self.client.messages.create(to=to, from_=self.phone_num, body=msg)
 
-class Player(db.Model):
-    phone_num = db.Column(db.String(15), primary_key=True)
-    name = db.Column(db.String(80))
-    score = db.Column(db.Integer)
-
-    def __init__(self, phone_num, name=None):
-        self.phone_num = phone_num
-        self.name = name
-        self.score = 0
-
-
-
-
-
-
-
 
 
 def parse_message(msg):
@@ -127,11 +124,12 @@ def parse_message(msg):
 
 @app.route("/", methods=['GET', 'POST'])
 def respond_to_message():
-    GAME_TRACKER = GameTracker.query.get(1)
-    if not GAME_TRACKER:
-        GAME_TRACKER = GameTracker()
-        db.session.add(GAME_TRACKER)
+    game_state = GameState.query.get(1)
+    if not game_state:
+        game_state = GameState()
+        db.session.add(game_state)
         db.session.commit()
+    GAME_TRACKER = GameTracker(game_state)
     # topic= None
     # pics_received = 0
     # players = None
@@ -159,10 +157,13 @@ def respond_to_message():
     elif pic_url:
         print "Picture message with url:", pic_url
         resp = GAME_TRACKER.judge_picture(from_number, pic_url)
-        db.session.commit()
     else:
         resp = "You're supposed to send a picture, idiot"
         GAME_TRACKER.send_message(from_number, resp)
+
+    game_state.topic = GAME_TRACKER.topic
+    game_state.pics_received = GAME_TRACKER.pics_received
+    db.session.commit()
     return resp
 
 if __name__ == '__main__':
