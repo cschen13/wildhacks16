@@ -23,6 +23,12 @@ class Player(db.Model):
         self.name = name
         self.score = 0
 
+class Winners(db.Model):
+    phone_num = db.Column(db.String(15), primary_key=True)
+
+    def __init__(self, phone_num):
+        self.phone_num = phone_num
+
 class GameTracker(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     topic = db.Column(db.String(120))
@@ -62,7 +68,10 @@ class GameController(object):
 
     def remove_all_players(self):
         for player in Player.query.all():
-            _ = self.remove_player(player.phone_num)
+            db.session.delete(player)
+            msg = "You have left the game. Message me anything if you want to join in."
+            self.send_message(phone_num, msg)
+        db.session.commit()
         return "All players removed."
 
     def set_player_name(self, phone_num, name):
@@ -74,6 +83,8 @@ class GameController(object):
         return msg
 
     def judge_picture(self, phone_num, picture_url):
+        if Winners.query.get(phone_num) is not None:
+            self.punish_cheater(phone_num)
         #return whether or not this is an accurate picture using clarifai api
         accurate_picture = self.recognizer.judge(self.topic, picture_url)
         if accurate_picture:
@@ -84,6 +95,9 @@ class GameController(object):
             return msg
 
     def give_points(self, phone_num):
+        winner = Winner(phone_num)
+        db.session.add(winner)
+        db.session.commit()
         player = Player.query.get(phone_num)
         points_received = 3 - self.pics_received
         player.score += points_received
@@ -97,7 +111,16 @@ class GameController(object):
             self.pics_received = 0
             self.send_leaderboard()
             self.change_topic()
-        # db.session.commit()
+            self.reset_winners_table()
+        return msg
+
+    def punish_cheater(self, phone_num):
+        player = Player.query.get(phone_num)
+        player.score = 0
+        db.session.commit()
+        msg = ("You cheating scumbag. You already won this round, so since "
+               "you're trying to cheat we have reset your score to ZERO.")
+        self.send_message(phone_num, msg)
         return msg
 
     def send_leaderboard(self):
@@ -111,6 +134,11 @@ class GameController(object):
             standings += ("{0}: {1} points\n".format(player[0], player[1]))
         msg = "The new standings are:\n{0}".format(standings)
         self.send_to_all_players(msg)
+
+    def reset_winners_table(self):
+        for winner in Winners.query.all():
+            db.session.delete(winner)
+        db.session.commit()
 
     def change_topic(self):
         self.topic = self.recognizer.get_random_topic()
