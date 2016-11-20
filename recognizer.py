@@ -13,7 +13,6 @@ class Recognizer:
 						   'chair': ['chair', 'seat'],
 						   'door': ['door', 'entrance'],
 						   'backpack': ['backpack'],
-						   'watch': ['watch'],
 						   'bottle': ['bottle'],
 						   'drink': ['drink']
 						  }
