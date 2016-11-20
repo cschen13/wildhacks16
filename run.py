@@ -10,10 +10,10 @@ db = SQLAlchemy(app)
 
 
 
-class GameTracker(object):
-    # id = db.Column(db.Integer, primary_key=True)
-    # topic = db.Column(db.String(120))
-    # pics_received = db.Column(db.Integer)
+class GameTracker(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    topic = db.Column(db.String(120))
+    pics_received = db.Column(db.Integer)
 
     def __init__(self, topic=None, pics_received=0):
         if not topic:
@@ -119,15 +119,19 @@ class Player(db.Model):
 
 
 
-GAME_TRACKER = GameTracker()
-# db.session.add(GAME_TRACKER)
-# db.session.commit()
+
+
 
 def parse_message(msg):
     return (msg.get('From', None), msg.get('Body', ''), msg.get('MediaUrl0', None))
 
 @app.route("/", methods=['GET', 'POST'])
 def respond_to_message():
+    GAME_TRACKER = GameTracker.query.get(1)
+    if not GAME_TRACKER:
+        GAME_TRACKER = GameTracker()
+        db.session.add(GAME_TRACKER)
+        db.session.commit()
     # topic= None
     # pics_received = 0
     # players = None
@@ -155,6 +159,7 @@ def respond_to_message():
     elif pic_url:
         print "Picture message with url:", pic_url
         resp = GAME_TRACKER.judge_picture(from_number, pic_url)
+        db.session.commit()
     else:
         resp = "You're supposed to send a picture, idiot"
         GAME_TRACKER.send_message(from_number, resp)
@@ -163,15 +168,3 @@ def respond_to_message():
 if __name__ == '__main__':
     app.debug = True
     app.run()
-
-
-
-
-
-
-
-
-
-
-
-
