@@ -14,7 +14,13 @@ class Recognizer:
 						   'door': ['door', 'entrance'],
 						   'backpack': ['backpack'],
 						   'bottle': ['bottle'],
-						   'drink': ['drink']
+						   'drink': ['drink'],
+						   'TV': ['television'],
+						   'wood': ['wood', 'hardwood'],
+						   'shoe': ['footwear', 'sneakers', 'shoe'],
+						   'pair of jeans': ['denim'],
+						   'phone': ['telephone'],
+						   'glasses': ['eyewear', 'eyeglasses', 'sunglasses']
 						  }
 		self.threshold = 0.90
 
