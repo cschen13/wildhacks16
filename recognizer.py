@@ -1,5 +1,6 @@
-from clarifai.rest import ClarifaiApp
 import json
+import random
+from clarifai.rest import ClarifaiApp
 
 class Recognizer:
 	def __init__(self, id, secret):

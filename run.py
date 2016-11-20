@@ -60,6 +60,11 @@ class GameController(object):
         self.send_message(phone_num, msg)
         return msg
 
+    def remove_all_players(self):
+        for player in Player.query.all():
+            _ = self.remove_player(player.phone_num)
+        return "All players removed."
+
     def set_player_name(self, phone_num, name):
         player = Player.query.get(phone_num)
         player.name = name
@@ -157,17 +162,15 @@ def respond_to_message():
         resp = game_controller.add_player(from_number)
     elif "done" in body.lower():
         resp = game_controller.remove_player(from_number)
+    elif "reset" in body.lower():
+        resp = game_controller.remove_all_players()
     elif not Player.query.get(from_number).name:
         resp = game_controller.set_player_name(from_number, body)
-    # elif not game_controller.topic:
-    #     resp = "Sorry! Submissions are closed."
-    #     game_controller.send_message(from_number, resp)
-    # if numMedia > 0:
     elif pic_url:
         print "Picture message with url:", pic_url
         resp = game_controller.judge_picture(from_number, pic_url)
     else:
-        resp = "You're supposed to send a picture of a {0}, idiot".format(game_controller.topic)
+        resp = "You're supposed to send a picture of a {0}, idiot.".format(game_controller.topic)
         game_controller.send_message(from_number, resp)
 
     game_state.topic = game_controller.topic
