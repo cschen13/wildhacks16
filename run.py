@@ -29,7 +29,7 @@ class GameTracker(db.Model):
     pics_received = db.Column(db.Integer)
 
     def __init__(self, topic=None, pics_received=0):
-        if not topic:
+        if topic is None:
             r = Recognizer(CLARIFAI_APP_ID, CLARIFAI_APP_SECRET)
             topic = r.get_random_topic()
         self.topic = topic
@@ -143,28 +143,24 @@ def parse_message(msg):
 @app.route("/", methods=['GET', 'POST'])
 def respond_to_message():
     game_state = GameTracker.query.get(1)
-    if not game_state:
+    if game_state is None:
         game_state = GameTracker()
         db.session.add(game_state)
         db.session.commit()
     game_controller = GameController(game_state)
     from_number, body, pic_url = parse_message(request.values)
-    # numMedia = request.values.get('NumMedia', 0)
-    # pic_url = None
-    # if numMedia > 0:
-        # pic_url = request.values.get('MediaUrl0', None)
-    if not from_number:
+
+    if from_number is None:
         print "WARNING: from number not found."
         return ''
     print "Message from", from_number, "saying", body
-    # if from_number not in Player.query.all():
-    if not Player.query.get(from_number):
+    if Player.query.get(from_number) is None:
         resp = game_controller.add_player(from_number)
     elif "done" in body.lower():
         resp = game_controller.remove_player(from_number)
     elif "reset" in body.lower():
         resp = game_controller.remove_all_players()
-    elif not Player.query.get(from_number).name:
+    elif Player.query.get(from_number).name is None:
         resp = game_controller.set_player_name(from_number, body)
     elif pic_url:
         print "Picture message with url:", pic_url
