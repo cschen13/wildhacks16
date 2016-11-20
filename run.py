@@ -75,7 +75,6 @@ class GameController(object):
     def remove_all_players(self):
         for player in Player.query.all():
             _ = self.remove_player(player.phone_num)
-        return "All players removed."
 
     def set_player_name(self, phone_num, name):
         player = Player.query.get(phone_num)
@@ -143,6 +142,13 @@ class GameController(object):
             self.send_message(phone_num, msg)
         return msg
 
+    def reset_game(self):
+        self.remove_all_players()
+        self.reset_winners_table()
+        self.pics_received = 0
+        self.topic = self.recognizer.get_random_topic()
+        return "Game has been reset."
+
     def reset_winners_table(self):
         for winner in Winners.query.all():
             db.session.delete(winner)
@@ -196,7 +202,7 @@ def respond_to_message():
     elif "done" in body.lower():
         resp = game_controller.remove_player(from_number)
     elif "reset" in body.lower():
-        resp = game_controller.remove_all_players()
+        resp = game_controller.reset_game()
     elif "standings" in body.lower():
         resp = game_controller.send_leaderboard(from_number)
     elif Player.query.get(from_number).name is None:
